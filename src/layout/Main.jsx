@@ -15,6 +15,8 @@ class Main extends Component {
         //type = 'all' - задаем значение по умолчанию
         this.setState({ loading: true });
 
+        //test commit
+
         fetch(
             `https://www.omdbapi.com/?apikey=${API_kEY}&s=${title}${
                 type === "all" ? "" : `&type=${type}`
