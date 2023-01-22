@@ -3,7 +3,7 @@ import { Movies } from "../components/Movies";
 import { Preloader } from "../components/Preloader";
 import { Search } from "../components/Search";
 
-const API_kEY=process.env.REACT_APP_API_KEY;
+const API_kEY = process.env.REACT_APP_API_KEY;
 
 class Main extends Component {
     state = {
@@ -16,22 +16,30 @@ class Main extends Component {
         this.setState({ loading: true });
 
         fetch(
-            `http://www.omdbapi.com/?apikey=${API_kEY}&s=${title}${
+            `https://www.omdbapi.com/?apikey=${API_kEY}&s=${title}${
                 type === "all" ? "" : `&type=${type}`
             }`
         )
             .then((response) => response.json())
             .then((data) =>
                 this.setState({ movies: data.Search, loading: false })
-            );
+            )
+            .catch((err) => {
+                console.error(err);
+                this.setState({ loading: false });
+            });
     };
 
     componentDidMount() {
-        fetch(`http://www.omdbapi.com/?apikey=${API_kEY}&s=matrix`)//ключ данный на omdbapi хранится в файле .env.local для безопасности. Как правильно хранить/выкладывать в ропозиториях ключи см. в уроке.
+        fetch(`https://www.omdbapi.com/?apikey=${API_kEY}&s=matrix`) //ключ данный на omdbapi хранится в файле .env.local для безопасности. Как правильно хранить/выкладывать в ропозиториях ключи см. в уроке.
             .then((response) => response.json())
-            .then((data) =>
-                this.setState({ movies: data.Search, loading: false })//data.Search - это ключ в ответном JSON с сайта
-            );
+            .then(
+                (data) => this.setState({ movies: data.Search, loading: false }) //data.Search - это ключ в ответном JSON с сайта
+            )
+            .catch((err) => {
+                console.error(err);
+                this.setState({ loading: false });
+            });
     }
 
     render() {
@@ -41,11 +49,7 @@ class Main extends Component {
             <main className='container content'>
                 <Search searchMovies={this.searchMovies} />
 
-                {loading ? (
-                    <Preloader />
-                ) :(
-                    <Movies movies={movies} />
-                )}
+                {loading ? <Preloader /> : <Movies movies={movies} />}
             </main>
         );
     }
